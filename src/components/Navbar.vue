@@ -53,10 +53,30 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar dense class="blue white--text">
+    <v-toolbar dense class="blue darken-1 white--text">
       <v-app-bar-nav-icon class="white--text" @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title class="uiGetThemeFontColor">Holochain WEB</v-toolbar-title>
+      <v-toolbar-title>Holochain WEB</v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+      <div>
+        Holo Sunucusu:
+        <v-btn icon class="white--text">
+          <v-icon
+            v-if="holoConnect !== null"
+            :class="holoConnect ? 'green--text text--lighten-2' : 'red--text text--darken-4'"
+          >mdi-{{holoConnect ? 'check' : 'close'}}</v-icon>
+
+          <v-progress-circular
+            v-if="holoConnect === null"
+            :width="3"
+            :size="20"
+            color="white"
+            indeterminate
+          ></v-progress-circular>
+        </v-btn>
+      </div>
     </v-toolbar>
   </nav>
 </template>
@@ -79,8 +99,9 @@ export default {
         subheader: "Yönetim",
         text: "Kullanıcılar",
         route: "/users"
-      },
-    ]
+      }
+    ],
+    holoConnect: null
   })
 };
 </script>
