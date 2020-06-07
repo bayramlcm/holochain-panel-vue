@@ -5,6 +5,17 @@ import store from './store'
 import vuetify from './plugins/vuetify';
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
+import holochain from './holochain/connection'
+
+holochain()
+  .then((data) => {
+    console.log("SUCCESS")
+    console.log(data)
+  })
+  .catch((err) => {
+    console.log("ERR");
+    console.log(err);
+  })
 
 Vue.config.productionTip = false
 
