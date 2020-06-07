@@ -42,14 +42,14 @@ export default {
                         // Başarılı!
                         resolve((instance, zome, fnName) => async params => {
                             console.log(
-                                `Calling zome function: ${instance}/${zome}/${fnName} with params`,
+                                `Holochain (giden) fonksiyon: ${instance}/${zome}/${fnName}, parametreler: `,
                                 params
                             );
 
                             const result = await callZome(instance, zome, fnName)(params);
 
                             console.log(
-                                `Zome function ${instance}/${zome}/${fnName} with params returned`,
+                                `Holochain (gelen) fonksiyon: ${instance}/${zome}/${fnName}, yanıt: `,
                                 result
                             );
                             return result;
