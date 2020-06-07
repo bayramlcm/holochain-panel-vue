@@ -34,7 +34,7 @@ export default {
             // Holochain bağlantı işlemleri
             new Promise((resolve, reject) => {
                 connect({
-                    url: payload.url
+                    url: payload.HOST_URL
                 })
                     .then(({ callZome, ws }) => { // arguments: close, onSignal
                         // Eğer bağlantı koparsa
