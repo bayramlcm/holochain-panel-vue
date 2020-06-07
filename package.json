@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "@holochain/hc-web-client": "^0.5.3",
+    "@mdi/font": "^3.6.95",
     "core-js": "^3.6.5",
+    "roboto-fontface": "*",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuetify": "^2.2.11",
