@@ -5,17 +5,10 @@ import store from './store'
 import vuetify from './plugins/vuetify';
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
-import holochain from './holochain/connection'
+// Özel
+import { holochain as holochainConfig } from '../bin/config'
 
-holochain()
-  .then((data) => {
-    console.log("SUCCESS")
-    console.log(data)
-  })
-  .catch((err) => {
-    console.log("ERR");
-    console.log(err);
-  })
+store.dispatch('holochainConnect', holochainConfig);
 
 Vue.config.productionTip = false
 
