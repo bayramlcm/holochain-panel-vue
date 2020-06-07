@@ -15,7 +15,7 @@
       <v-divider></v-divider>
       <v-list>
         <div v-for="item in links" :key="item.title">
-          <v-subheader>Yönetim</v-subheader>
+          <v-subheader v-if="!!item.subheader">{{item.subheader}}</v-subheader>
           <v-list-item v-if="item.route" link router :to="item.route">
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
@@ -70,9 +70,16 @@ export default {
     links: [
       {
         icon: "mdi-home-outline",
+        subheader: "Genel",
         text: "Anasayfa",
         route: "/"
-      }
+      },
+      {
+        icon: "mdi-account-circle-outline",
+        subheader: "Yönetim",
+        text: "Kullanıcılar",
+        route: "/users"
+      },
     ]
   })
 };
