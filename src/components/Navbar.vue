@@ -64,12 +64,12 @@
         Holo Sunucusu:
         <v-btn icon class="white--text">
           <v-icon
-            v-if="holoConnect !== null"
-            :class="holoConnect ? 'green--text text--lighten-2' : 'red--text text--darken-4'"
-          >mdi-{{holoConnect ? 'check' : 'close'}}</v-icon>
+            v-if="holochainConnected !== null"
+            :class="holochainConnected ? 'green--text text--lighten-2' : 'red--text text--darken-4'"
+          >mdi-{{holochainConnected ? 'check' : 'close'}}</v-icon>
 
           <v-progress-circular
-            v-if="holoConnect === null"
+            v-if="holochainConnected === null"
             :width="3"
             :size="20"
             color="white"
@@ -82,8 +82,9 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
-  components: {},
   name: "Navbar",
   data: () => ({
     drawer: false,
@@ -102,6 +103,9 @@ export default {
       }
     ],
     holoConnect: null
-  })
+  }),
+  computed: {
+    ...mapGetters(["holochainConnected"])
+  }
 };
 </script>
