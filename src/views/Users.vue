@@ -1,10 +1,47 @@
 <template>
-  <div class="users">
-    <v-col cols="12" sm="6" md="3">
-      <v-text-field label="İsim"></v-text-field>
-      <v-btn @click="hello()">Hello</v-btn>
-    </v-col>
-  </div>
+  <v-data-table :headers="headers" :items="users" class="elevation-1">
+    <template v-slot:top>
+      <v-toolbar flat color="white">
+        <v-toolbar-title>Kullanıcılar</v-toolbar-title>
+        <v-divider class="mx-4" inset vertical></v-divider>
+        <v-spacer></v-spacer>
+        <v-dialog v-model="dialog" max-width="500px">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Kullanıcı Oluştur</v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              <span class="headline">{{ dialogTitle }}</span>
+            </v-card-title>
+
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field v-model="editedItem.name" label="Adı Soyadı"></v-text-field>
+                    <v-text-field v-model="editedItem.email" label="E-Posta"></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="close">İptal</v-btn>
+              <v-btn color="blue darken-1" text @click="save">Kaydet</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
+    </template>
+    <template v-slot:item.actions="{ item }">
+      <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+      <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+    </template>
+    <template v-slot:no-data>
+      Kullanıcı yok
+    </template>
+  </v-data-table>
 </template>
 
 <script>
@@ -13,51 +50,118 @@ import { holochain as holochainConfig } from "../../bin/config";
 
 export default {
   name: "Users",
-  methods: {
-    hello() {
-      // console.log("HELLO!");
-      if (this.holochainConnected) {
-        console.log({ holo: this.holochainConnection });
+  data: () => ({
+    dialog: false,
+    headers: [
+      { text: "Adı", value: "name" },
+      { text: "E-Posta", value: "email" }
+    ],
+    editedIndex: -1,
+    editedItem: {
+      name: "",
+      email: ""
+    },
+    defaultItem: {
+      name: "",
+      email: ""
+    },
+    users: []
+  }),
 
-        // Kullanıcı oluştur
-        this.holochainConnection(
-          holochainConfig.INSTANCE_NAME,
-          holochainConfig.ZOOM_NAME,
-          "create_person"
-        )({ person: { name: "Bayram ALAÇAM" } })
-          .then(data => {
-            const result = JSON.parse(data);
-            const userId = result.Ok;
-            console.log({ userId });
-            // Kullanıcının verilerini al
-            this.holochainConnection(
-              holochainConfig.INSTANCE_NAME,
-              holochainConfig.ZOOM_NAME,
-              "retrieve_person"
-            )({ address: userId })
-              .then(data => {
-                const result = JSON.parse(data);
-                const name = result.Ok
-                console.log({ name });
-              })
-              .catch(err => console.log({ err }));
-          })
-          .catch(err => console.log({ err }));
-        // HELLO
-        // const ax = this.holochainConnection(
-        //   holochainConfig.INSTANCE_NAME,
-        //   holochainConfig.ZOOM_NAME,
-        //   "hello_holo"
-        // )({ args: {} })
-        //   .then(data => console.log({ data }))
-        //   .catch(err => console.log({ err }));
-      } else {
-        console.log("Holochain bağlantısı yok!");
-      }
+  watch: {
+    dialog(val) {
+      val || this.close();
     }
   },
+
+  methods: {
+    editItem(item) {
+      this.editedIndex = this.users.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+    },
+
+    deleteItem(item) {
+      const index = this.users.indexOf(item);
+      confirm("Kullanıcıyı silmek istediğinize emin misiniz?") &&
+        this.users.splice(index, 1);
+    },
+
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    save() {
+      if (this.editedIndex > -1) {
+        Object.assign(this.users[this.editedIndex], this.editedItem);
+      } else {
+        this.users.push(this.editedItem);
+      }
+      this.close();
+    }
+    // hello() {
+    //   // console.log("HELLO!");
+    //   if (this.holochainConnected) {
+    //     console.log({ holo: this.holochainConnection });
+    //     // Tüm kullanıcıları döndür
+    //     this.holochainConnection(
+    //       holochainConfig.INSTANCE_NAME,
+    //       holochainConfig.ZOOM_NAME,
+    //       "get_all_person"
+    //     )({})
+    //       .then(data => {
+    //         console.log({ data });
+    //       })
+    //       .catch(err => console.log({ err }));
+    //     // Kullanıcı oluştur
+    //     if (false)
+    //       this.holochainConnection(
+    //         holochainConfig.INSTANCE_NAME,
+    //         holochainConfig.ZOOM_NAME,
+    //         "create_person"
+    //       )({ person: { name: "Bayram ALAÇAM" } })
+    //         .then(data => {
+    //           const result = JSON.parse(data);
+    //           const userId = result.Ok;
+    //           console.log({ userId });
+    //           // Kullanıcının verilerini al
+    //           this.holochainConnection(
+    //             holochainConfig.INSTANCE_NAME,
+    //             holochainConfig.ZOOM_NAME,
+    //             "retrieve_person"
+    //           )({ address: userId })
+    //             .then(data => {
+    //               const result = JSON.parse(data);
+    //               const name = result.Ok;
+    //               console.log({ name });
+    //             })
+    //             .catch(err => console.log({ err }));
+    //         })
+    //         .catch(err => console.log({ err }));
+    //     // HELLO
+    //     // const ax = this.holochainConnection(
+    //     //   holochainConfig.INSTANCE_NAME,
+    //     //   holochainConfig.ZOOM_NAME,
+    //     //   "hello_holo"
+    //     // )({ args: {} })
+    //     //   .then(data => console.log({ data }))
+    //     //   .catch(err => console.log({ err }));
+    //   } else {
+    //     console.log("Holochain bağlantısı yok!");
+    //   }
+    // }
+  },
   computed: {
-    ...mapGetters(["holochainConnected", "holochainConnection"])
+    ...mapGetters(["holochainConnected", "holochainConnection"]),
+    dialogTitle() {
+      return this.editedIndex === -1
+        ? "Kullanıcı Oluştur"
+        : "Kullanıcı Güncelle";
+    }
   }
 };
 </script>
