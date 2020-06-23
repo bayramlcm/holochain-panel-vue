@@ -95,18 +95,36 @@ export default {
 
     save() {
       // Holo bağlantı kontrolü
-      if (!this.holochainConnection || true)
+      if (!this.holochainConnection)
         return this.$store.commit("notificationSet", {
           color: "error",
           text: "Holo sunucusuyla bağlantı kurulamıyor"
         });
 
-      if (this.editedIndex > -1) {
-        Object.assign(this.users[this.editedIndex], this.editedItem);
-      } else {
-        this.users.push(this.editedItem);
-      }
-      this.close();
+      // Kullanıcıyı oluştur
+      this.holochainConnection(
+        holochainConfig.INSTANCE_NAME,
+        holochainConfig.ZOOM_NAME,
+        "create_persons"
+      )({ person: { name: "Bayram ALAÇAM" } })
+        .then(data => {
+          const result = JSON.parse(data);
+          const userId = result.Ok;
+          console.log({ create_person_success: userId });
+          // if (this.editedIndex > -1) {
+          //   Object.assign(this.users[this.editedIndex], this.editedItem);
+          // } else {
+          //   this.users.push(this.editedItem);
+          // }
+          // this.close();
+        })
+        .catch(err => {
+          console.log({ create_person_error: err });
+          this.$store.commit("notificationSet", {
+            color: "error",
+            text: "Holo sunucusunda bir hata meydana geldi."
+          });
+        });
     }
     // hello() {
     //   // console.log("HELLO!");

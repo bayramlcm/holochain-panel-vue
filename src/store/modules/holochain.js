@@ -40,20 +40,25 @@ export default {
                         // Eğer bağlantı koparsa
                         ws.once('close', (close) => dispatch('holochainReConnect', payload));
                         // Başarılı!
-                        resolve((instance, zome, fnName) => async params => {
+                        resolve((instance, zome, fnName) => params => new Promise((resolve, reject) => {
                             console.log(
                                 `Holochain (giden) fonksiyon: ${instance}/${zome}/${fnName}, parametreler: `,
                                 params
                             );
 
-                            const result = await callZome(instance, zome, fnName)(params);
-
-                            console.log(
-                                `Holochain (gelen) fonksiyon: ${instance}/${zome}/${fnName}, yanıt: `,
-                                result
-                            );
-                            return result;
-                        });
+                            callZome(instance, zome, fnName)(params)
+                                .then(result => {
+                                    console.log(
+                                        `Holochain (gelen) fonksiyon: ${instance}/${zome}/${fnName}, yanıt: `,
+                                        result
+                                    );
+                                    resolve(result)
+                                })
+                                .catch(err => {
+                                    console.log(`Holochain (error) fonksiyon: ${instance}/${zome}/${fnName}, yanıt: `, err,);
+                                    reject(err)
+                                });
+                        }));
                     })
                     .catch((err) => reject(err))
             }).then((connection) => commit("holochainConnect", {
