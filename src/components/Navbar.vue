@@ -100,6 +100,11 @@ export default {
         subheader: "Yönetim",
         text: "Kullanıcılar",
         route: "/users"
+      },
+      {
+        icon: "mdi-newspaper-variant-multiple-outline",
+        text: "Yazılar",
+        route: "/posts"
       }
     ],
     holoConnect: null
