@@ -51,15 +51,18 @@ export default {
   data: () => ({
     dialog: false,
     headers: [
+      { text: "ID", value: "id" },
       { text: "Adı", value: "name" },
       { text: "E-Posta", value: "mail" }
     ],
     editedIndex: -1,
     editedItem: {
+      id: "",
       name: "",
       mail: ""
     },
     defaultItem: {
+      id: "",
       name: "",
       mail: ""
     },
@@ -94,38 +97,45 @@ export default {
     },
 
     save() {
-      // Holo bağlantı kontrolü
-      if (!this.holochainConnection)
-        return this.$store.commit("notificationSet", {
-          color: "error",
-          text: "Holo sunucusuyla bağlantı kurulamıyor"
-        });
+      this.$store.dispatch("userAdd", { name: "Bayram ALAÇAM" }).then(id => {
+        // Kullanıcı güncelle
+        if (this.editedIndex > -1) {
+          Object.assign(this.users[this.editedIndex], this.editedItem);
+        } else {
+          this.editedItem.id = id;
+          // Kullanıcı Ekle
+          this.users.push(this.editedItem);
+        }
+        this.close();
+      });
+      //   // Holo bağlantı kontrolü
+      //   if (!this.holochainConnection)
+      //     return this.$store.commit("notificationSet", {
+      //       color: "error",
+      //       text: "Holo sunucusuyla bağlantı kurulamıyor"
+      //     });
 
-      // Kullanıcıyı oluştur
-      this.holochainConnection(
-        holochainConfig.INSTANCE_NAME,
-        holochainConfig.ZOOM_NAME,
-        "create_persons"
-      )({ person: { name: "Bayram ALAÇAM" } })
-        .then(data => {
-          const result = JSON.parse(data);
-          const userId = result.Ok;
-          console.log({ create_person_success: userId });
-          // if (this.editedIndex > -1) {
-          //   Object.assign(this.users[this.editedIndex], this.editedItem);
-          // } else {
-          //   this.users.push(this.editedItem);
-          // }
-          // this.close();
-        })
-        .catch(err => {
-          console.log({ create_person_error: err });
-          this.$store.commit("notificationSet", {
-            color: "error",
-            text: "Holo sunucusunda bir hata meydana geldi."
-          });
-        });
+      //   // Kullanıcıyı oluştur
+      //   this.holochainConnection(
+      //     holochainConfig.INSTANCE_NAME,
+      //     holochainConfig.ZOOM_NAME,
+      //     "create_person"
+      //   )({ person: { name: "Bayram ALAÇAM" } })
+      //     .then(data => {
+      //       const result = JSON.parse(data);
+      //       const userId = result.Ok;
+      //       console.log({ create_person_success: userId });
+
+      //     })
+      //     .catch(err => {
+      //       console.log({ create_person_error: err });
+      //       this.$store.commit("notificationSet", {
+      //         color: "error",
+      //         text: "Holo sunucusunda bir hata meydana geldi."
+      //       });
+      //     });
     }
+
     // hello() {
     //   // console.log("HELLO!");
     //   if (this.holochainConnected) {
