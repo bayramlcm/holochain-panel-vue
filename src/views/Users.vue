@@ -19,7 +19,7 @@
                 <v-row>
                   <v-col cols="12">
                     <v-text-field v-model="editedItem.name" label="Adı Soyadı"></v-text-field>
-                    <v-text-field v-model="editedItem.email" label="E-Posta"></v-text-field>
+                    <v-text-field v-model="editedItem.mail" label="E-Posta"></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -38,9 +38,7 @@
       <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
       <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
     </template>
-    <template v-slot:no-data>
-      Kullanıcı yok
-    </template>
+    <template v-slot:no-data>Kullanıcı yok</template>
   </v-data-table>
 </template>
 
@@ -54,16 +52,16 @@ export default {
     dialog: false,
     headers: [
       { text: "Adı", value: "name" },
-      { text: "E-Posta", value: "email" }
+      { text: "E-Posta", value: "mail" }
     ],
     editedIndex: -1,
     editedItem: {
       name: "",
-      email: ""
+      mail: ""
     },
     defaultItem: {
       name: "",
-      email: ""
+      mail: ""
     },
     users: []
   }),
@@ -96,6 +94,13 @@ export default {
     },
 
     save() {
+      // Holo bağlantı kontrolü
+      if (!this.holochainConnection || true)
+        return this.$store.commit("notificationSet", {
+          color: "error",
+          text: "Holo sunucusuyla bağlantı kurulamıyor"
+        });
+
       if (this.editedIndex > -1) {
         Object.assign(this.users[this.editedIndex], this.editedItem);
       } else {
