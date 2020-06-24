@@ -3,6 +3,8 @@
     :headers="headers"
     :items="users"
     :loading="loading"
+    :sort-desc="[true, false]"
+    :sort-by="['createdAt', 'name']"
     loading-text="Kullanıcılar yükleniyor... Lütfen bekleyin"
     class="elevation-1"
   >
