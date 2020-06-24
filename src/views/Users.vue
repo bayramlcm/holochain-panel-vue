@@ -53,7 +53,8 @@ export default {
     headers: [
       { text: "ID", value: "id" },
       { text: "Adı", value: "name" },
-      { text: "E-Posta", value: "mail" }
+      { text: "E-Posta", value: "mail" },
+      { text: "Oluşturma Tarihi", value: "createdAt" }
     ],
     editedIndex: -1,
     editedItem: {
@@ -97,17 +98,21 @@ export default {
     },
 
     save() {
-      this.$store.dispatch("userAdd", { name: "Bayram ALAÇAM" }).then(id => {
-        // Kullanıcı güncelle
-        if (this.editedIndex > -1) {
-          Object.assign(this.users[this.editedIndex], this.editedItem);
-        } else {
-          this.editedItem.id = id;
-          // Kullanıcı Ekle
-          this.users.push(this.editedItem);
-        }
-        this.close();
-      });
+      this.$store
+        .dispatch("userAdd", {
+          name: this.editedItem.name,
+          mail: this.editedItem.mail
+        })
+        .then(user => {
+          // Kullanıcı güncelle
+          if (this.editedIndex > -1) {
+            Object.assign(this.users[this.editedIndex], this.editedItem);
+          } else {
+            // Kullanıcı Ekle
+            this.users.push(user);
+          }
+          this.close();
+        });
       //   // Holo bağlantı kontrolü
       //   if (!this.holochainConnection)
       //     return this.$store.commit("notificationSet", {
