@@ -1,5 +1,11 @@
 <template>
-  <v-data-table :headers="headers" :items="users" class="elevation-1">
+  <v-data-table
+    :headers="headers"
+    :items="users"
+    :loading="loading"
+    loading-text="Kullanıcılar yükleniyor... Lütfen bekleyin"
+    class="elevation-1"
+  >
     <template v-slot:top>
       <v-toolbar flat color="white">
         <v-toolbar-title>Kullanıcılar</v-toolbar-title>
@@ -51,8 +57,16 @@ import { dateConvert } from "../../bin/atom";
 
 export default {
   name: "Users",
+  // Uygulama açılırken başla
+  mounted() {
+    this.$store.dispatch("userGetAll").then(data => {
+      this.users = data;
+      this.loading = false;
+    });
+  },
   data: () => ({
     dialog: false,
+    loading: true,
     headers: [
       { text: "ID", value: "id" },
       { text: "Adı", value: "name" },
@@ -114,85 +128,7 @@ export default {
           }
           this.close();
         });
-      //   // Holo bağlantı kontrolü
-      //   if (!this.holochainConnection)
-      //     return this.$store.commit("notificationSet", {
-      //       color: "error",
-      //       text: "Holo sunucusuyla bağlantı kurulamıyor"
-      //     });
-
-      //   // Kullanıcıyı oluştur
-      //   this.holochainConnection(
-      //     holochainConfig.INSTANCE_NAME,
-      //     holochainConfig.ZOOM_NAME,
-      //     "create_person"
-      //   )({ person: { name: "Bayram ALAÇAM" } })
-      //     .then(data => {
-      //       const result = JSON.parse(data);
-      //       const userId = result.Ok;
-      //       console.log({ create_person_success: userId });
-
-      //     })
-      //     .catch(err => {
-      //       console.log({ create_person_error: err });
-      //       this.$store.commit("notificationSet", {
-      //         color: "error",
-      //         text: "Holo sunucusunda bir hata meydana geldi."
-      //       });
-      //     });
     }
-
-    // hello() {
-    //   // console.log("HELLO!");
-    //   if (this.holochainConnected) {
-    //     console.log({ holo: this.holochainConnection });
-    //     // Tüm kullanıcıları döndür
-    //     this.holochainConnection(
-    //       holochainConfig.INSTANCE_NAME,
-    //       holochainConfig.ZOOM_NAME,
-    //       "get_all_person"
-    //     )({})
-    //       .then(data => {
-    //         console.log({ data });
-    //       })
-    //       .catch(err => console.log({ err }));
-    //     // Kullanıcı oluştur
-    //     if (false)
-    //       this.holochainConnection(
-    //         holochainConfig.INSTANCE_NAME,
-    //         holochainConfig.ZOOM_NAME,
-    //         "create_person"
-    //       )({ person: { name: "Bayram ALAÇAM" } })
-    //         .then(data => {
-    //           const result = JSON.parse(data);
-    //           const userId = result.Ok;
-    //           console.log({ userId });
-    //           // Kullanıcının verilerini al
-    //           this.holochainConnection(
-    //             holochainConfig.INSTANCE_NAME,
-    //             holochainConfig.ZOOM_NAME,
-    //             "retrieve_person"
-    //           )({ address: userId })
-    //             .then(data => {
-    //               const result = JSON.parse(data);
-    //               const name = result.Ok;
-    //               console.log({ name });
-    //             })
-    //             .catch(err => console.log({ err }));
-    //         })
-    //         .catch(err => console.log({ err }));
-    //     // HELLO
-    //     // const ax = this.holochainConnection(
-    //     //   holochainConfig.INSTANCE_NAME,
-    //     //   holochainConfig.ZOOM_NAME,
-    //     //   "hello_holo"
-    //     // )({ args: {} })
-    //     //   .then(data => console.log({ data }))
-    //     //   .catch(err => console.log({ err }));
-    //   } else {
-    //     console.log("Holochain bağlantısı yok!");
-    //   }
-    // }
   },
   computed: {
     ...mapGetters(["holochainConnected", "holochainConnection"]),
