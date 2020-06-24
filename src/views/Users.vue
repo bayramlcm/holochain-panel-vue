@@ -73,18 +73,25 @@ export default {
       { text: "ID", value: "id" },
       { text: "Adı", value: "name" },
       { text: "E-Posta", value: "mail" },
-      { text: "Oluşturma Tarihi", value: "createdAt" }
+      { text: "Oluşturma Tarihi", value: "createdAt" },
+      {
+        text: "İşlemler",
+        value: "actions",
+        sortable: false
+      }
     ],
     editedIndex: -1,
     editedItem: {
       id: "",
       name: "",
-      mail: ""
+      mail: "",
+      createdAt: ""
     },
     defaultItem: {
       id: "",
       name: "",
-      mail: ""
+      mail: "",
+      createdAt: ""
     },
     users: []
   }),
@@ -115,21 +122,35 @@ export default {
       });
     },
     save() {
-      this.$store
-        .dispatch("userAdd", {
-          name: this.editedItem.name,
-          mail: this.editedItem.mail
-        })
-        .then(user => {
-          // Kullanıcı güncelle
-          if (this.editedIndex > -1) {
-            Object.assign(this.users[this.editedIndex], this.editedItem);
-          } else {
-            // Kullanıcı Ekle
+      // Kullanıcı güncelle
+      if (this.editedIndex > -1) {
+        this.$store
+          .dispatch("userUpdate", {
+            id: this.editedItem.id,
+            user: {
+              name: this.editedItem.name,
+              mail: this.editedItem.mail
+            }
+          })
+          .then(user => {
+            console.log({ user });
+            Object.assign(this.users[this.editedIndex], user);
+            this.close();
+          });
+      } else {
+        // Kullanıcı Ekle
+        this.$store
+          .dispatch("userAdd", {
+            user: {
+              name: this.editedItem.name,
+              mail: this.editedItem.mail
+            }
+          })
+          .then(user => {
             this.users.push(user);
-          }
-          this.close();
-        });
+            this.close();
+          });
+      }
     }
   },
   computed: {

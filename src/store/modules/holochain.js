@@ -79,6 +79,15 @@ export default {
                     dispatch('holochainConnect', payload);
                 }, 500);
             }, 1000)
-        }
+        },
+        // Holochain bağlantı kontrolü
+        holochainCheck: ({ commit, getters }) => new Promise((resolve, reject) => {
+            if (getters.holochainConnection) return resolve();
+            commit("notificationSet", {
+                color: "error",
+                text: "Holo sunucusuyla bağlantı kurulamıyor"
+            });
+            return reject();
+        }),
     },
 }

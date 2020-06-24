@@ -7,76 +7,102 @@ export default {
     getters: {},
     actions: {
         // Kullanıcı Listesi
-        userGetAll: ({ commit, getters }) => new Promise((resolve, reject) => {
+        userGetAll: ({ commit, dispatch, getters }) => new Promise((resolve, reject) => {
             // Holo bağlantı kontrolü
-            if (!getters.holochainConnection)
-                return commit("notificationSet", {
-                    color: "error",
-                    text: "Holo sunucusuyla bağlantı kurulamıyor"
-                });
-
-            getters.holochainConnection(
-                INSTANCE_NAME,
-                ZOOM_NAME,
-                'user_get_all'
-            )({})
-                .then(data => {
-                    const result = JSON.parse(data);
-                    // Sonuç başarılı mı?
-                    if ('Ok' in result) {
-                        resolve(result.Ok);
-                    } else {
+            dispatch('holochainCheck').then(() =>
+                getters.holochainConnection(
+                    INSTANCE_NAME,
+                    ZOOM_NAME,
+                    'user_get_all'
+                )({})
+                    .then(data => {
+                        const result = JSON.parse(data);
+                        // Sonuç başarılı mı?
+                        if ('Ok' in result) {
+                            resolve(result.Ok);
+                        } else {
+                            commit('notificationSet', {
+                                color: 'error',
+                                text: 'Kullanıcı listesi alınamadı.',
+                            });
+                            reject();
+                        }
+                    })
+                    .catch(() => {
                         commit('notificationSet', {
-                            color: 'error',
-                            text: 'Kullanıcı listesi alınamadı.',
+                            text: 'Sunucuyla bağlantı kurulamadı.'
                         });
                         reject();
-                    }
-                })
-                .catch(() => {
-                    commit('notificationSet', {
-                        text: 'Sunucuyla bağlantı kurulamadı.'
-                    });
-                    reject();
-                })
+                    })
+            );
         }),
         // Kullanıcı ekle
-        userAdd: ({ commit, getters }, payload) => new Promise((resolve, reject) => {
+        userAdd: ({ commit, dispatch, getters }, payload) => new Promise((resolve, reject) => {
             // Holo bağlantı kontrolü
-            if (!getters.holochainConnection)
-                return commit("notificationSet", {
-                    color: "error",
-                    text: "Holo sunucusuyla bağlantı kurulamıyor"
-                });
-
-            getters.holochainConnection(
-                INSTANCE_NAME,
-                ZOOM_NAME,
-                'user_add'
-            )({ user: payload })
-                .then(data => {
-                    const result = JSON.parse(data);
-                    // Sonuç başarılı mı?
-                    if ('Ok' in result) {
+            dispatch('holochainCheck').then(() =>
+                getters.holochainConnection(
+                    INSTANCE_NAME,
+                    ZOOM_NAME,
+                    'user_add'
+                )(payload)
+                    .then(data => {
+                        const result = JSON.parse(data);
+                        // Sonuç başarılı mı?
+                        if ('Ok' in result) {
+                            commit('notificationSet', {
+                                color: 'success',
+                                text: 'Kullanıcı başarıyla eklendi.',
+                            });
+                            resolve(result.Ok);
+                        } else {
+                            commit('notificationSet', {
+                                color: 'error',
+                                text: 'Kullanıcı eklenirken hata meydana geldi.',
+                            });
+                            reject();
+                        }
+                    })
+                    .catch(() => {
                         commit('notificationSet', {
-                            color: 'success',
-                            text: 'Kullanıcı başarıyla eklendi.',
-                        });
-                        resolve(result.Ok);
-                    } else {
-                        commit('notificationSet', {
-                            color: 'error',
-                            text: 'Kullanıcı eklenirken hata meydana geldi.',
+                            text: 'Sunucuyla bağlantı kurulamadı.'
                         });
                         reject();
-                    }
-                })
-                .catch(() => {
-                    commit('notificationSet', {
-                        text: 'Sunucuyla bağlantı kurulamadı.'
-                    });
-                    reject();
-                })
+                    })
+            );
         }),
+        // Kullanıcı Düzenle
+        userUpdate: ({ commit, dispatch, getters }, payload) => new Promise((resolve, reject) => {
+            // Holo bağlantı kontrolü
+            dispatch('holochainCheck').then(() =>
+                getters.holochainConnection(
+                    INSTANCE_NAME,
+                    ZOOM_NAME,
+                    'user_update'
+                )(payload)
+                    .then(data => {
+                        const result = JSON.parse(data);
+                        if ('Ok' in result) {
+                            commit('notificationSet', {
+                                color: 'success',
+                                text: 'Kullanıcı başarıyla güncellendi.',
+                            });
+                            resolve(result.Ok);
+                        } else {
+                            commit('notificationSet', {
+                                color: 'error',
+                                text: 'Kullanıcı güncellenirken hata meydana geldi.',
+                            });
+                            reject();
+                        }
+                    })
+                    .catch(() => {
+                        commit('notificationSet', {
+                            text: 'Sunucuyla bağlantı kurulamadı.'
+                        });
+                        reject();
+                    })
+            )
+        }),
+
     },
 }
