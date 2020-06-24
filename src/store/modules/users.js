@@ -18,15 +18,24 @@ export default {
             getters.holochainConnection(
                 INSTANCE_NAME,
                 ZOOM_NAME,
-                "create_person"
-            )({ person: payload })
+                'create_user'
+            )({ user: payload })
                 .then(data => {
                     const result = JSON.parse(data);
-                    commit('notificationSet', {
-                        color: 'success',
-                        text: 'Kullanıcı başarıyla eklendi.',
-                    });
-                    resolve(result.Ok);
+                    // Sonuç başarılı mı?
+                    if ('Ok' in result) {
+                        commit('notificationSet', {
+                            color: 'success',
+                            text: 'Kullanıcı başarıyla eklendi.',
+                        });
+                        resolve(result.Ok);
+                    } else {
+                        commit('notificationSet', {
+                            color: 'error',
+                            text: 'Kullanıcı eklenirken hata meydana geldi.',
+                        });
+                        reject();
+                    }
                 })
                 .catch(() => {
                     commit('notificationSet', {
