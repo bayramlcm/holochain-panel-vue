@@ -34,6 +34,9 @@
         </v-dialog>
       </v-toolbar>
     </template>
+    <!-- Oluşturma Tarihi -->
+    <template v-slot:item.createdAt="{ item }">{{dateConvert(item.createdAt)}}</template>
+    <!-- İşlemler -->
     <template v-slot:item.actions="{ item }">
       <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
       <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
@@ -44,7 +47,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { holochain as holochainConfig } from "../../bin/config";
+import { dateConvert } from "../../bin/atom";
 
 export default {
   name: "Users",
@@ -77,18 +80,17 @@ export default {
   },
 
   methods: {
+    dateConvert,
     editItem(item) {
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
-
     deleteItem(item) {
       const index = this.users.indexOf(item);
       confirm("Kullanıcıyı silmek istediğinize emin misiniz?") &&
         this.users.splice(index, 1);
     },
-
     close() {
       this.dialog = false;
       this.$nextTick(() => {
@@ -96,7 +98,6 @@ export default {
         this.editedIndex = -1;
       });
     },
-
     save() {
       this.$store
         .dispatch("userAdd", {
