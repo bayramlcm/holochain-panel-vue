@@ -111,8 +111,14 @@ export default {
     },
     deleteItem(item) {
       const index = this.users.indexOf(item);
-      confirm("Kullanıcıyı silmek istediğinize emin misiniz?") &&
-        this.users.splice(index, 1);
+      if (confirm("Kullanıcıyı silmek istediğinize emin misiniz?")) {
+        // Kullanıcıyı sil
+        this.$store
+          .dispatch("userDelete", {
+            id: item.id
+          })
+          .then(() => this.users.splice(index, 1));
+      }
     },
     close() {
       this.dialog = false;

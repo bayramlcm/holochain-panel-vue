@@ -103,6 +103,38 @@ export default {
                     })
             )
         }),
-
+        // Kullanıcı Sil
+        userDelete: ({ commit, dispatch, getters }, payload) => new Promise((resolve, reject) => {
+            // Holo bağlantı kontrolü
+            dispatch('holochainCheck').then(() =>
+                getters.holochainConnection(
+                    INSTANCE_NAME,
+                    ZOOM_NAME,
+                    'user_delete'
+                )(payload)
+                    .then(data => {
+                        const result = JSON.parse(data);
+                        if ('Ok' in result) {
+                            commit('notificationSet', {
+                                color: 'success',
+                                text: 'Kullanıcı başarıyla silindi.',
+                            });
+                            resolve(result.Ok);
+                        } else {
+                            commit('notificationSet', {
+                                color: 'error',
+                                text: 'Kullanıcı silinirken hata meydana geldi.',
+                            });
+                            reject();
+                        }
+                    })
+                    .catch(() => {
+                        commit('notificationSet', {
+                            text: 'Sunucuyla bağlantı kurulamadı.'
+                        });
+                        reject();
+                    })
+            )
+        }),
     },
 }
