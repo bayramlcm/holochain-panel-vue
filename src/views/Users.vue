@@ -16,7 +16,14 @@
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Kullanıcı Oluştur</v-btn>
+            <v-btn
+              color="green"
+              dark
+              class="mb-2 mr-2"
+              @click="randomAddUser()"
+            >Otomatik Kullanıcı Oluştur</v-btn>
           </template>
+
           <v-card>
             <v-card-title>
               <span class="headline">{{ dialogTitle }}</span>
@@ -104,6 +111,63 @@ export default {
 
   methods: {
     dateConvert,
+    randomAddUser() {
+      const names = [
+        "JALE",
+        "ALİ",
+        "MAHMUT",
+        "MANSUR",
+        "KÜRŞAD",
+        "GAMZE",
+        "MİRAÇ",
+        "YÜCEL",
+        "KUBİLAY",
+        "HAYATİ",
+        "BEDRİYE",
+        "MÜGE",
+        "BİRSEN",
+        "SERDAL",
+        "BÜNYAMİN",
+        "ÖZGÜR",
+        "FERDİ",
+        "REYHAN",
+        "İLHAN",
+        "GÜLŞAH",
+        "NALAN",
+        "SEMİH",
+        "ERGÜN",
+        "FATİH",
+        "ŞENAY",
+        "SERKAN",
+        "EMRE",
+        "BAHATTİN",
+        "IRAZCA",
+        "HATİCE",
+        "BARIŞ",
+        "REZAN",
+        "FATİH",
+        "FUAT",
+        "GÖKHAN",
+        "ORHAN",
+        "MEHMET",
+        "EVREN",
+        "OKTAY",
+        "HARUN",
+        "YAVUZ",
+        "PINAR"
+      ];
+      const name = names[Math.floor(Math.random() * names.length)];
+      const surname = names[Math.floor(Math.random() * names.length)];
+      const user = {
+        name: `${name} ${surname}`,
+        mail: `${name}.${surname}@gmail.com`.toLowerCase()
+      };
+      // Kullanıcı Ekle
+      this.$store.dispatch("userAdd", { user }).then(user => {
+        this.users.push(user);
+        this.close();
+      });
+    },
     editItem(item) {
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = Object.assign({}, item);
