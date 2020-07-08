@@ -1,19 +1,34 @@
-# holo-app
+# Holochain Panel Arayüzü
 
-## Project setup
-```
+## Uygulama Hakkında
+* Uygulama servisi holochain ile yazıldı.
+* Vue & Vuetify kullanılarak hazırlandı.
+
+
+## Uygulamayı Paketlerini Yükle
+```console
 yarn install
 ```
 
-### Compiles and hot-reloads for development
-```
+### Uygulamayı Başlat (developer modunda)
+```console
 yarn serve
 ```
 
-### Compiles and minifies for production
-```
+### Uygulamayı Yayınla
+```console
 yarn build
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### [Uygulama Servisine Git](https://github.com/bayramlcm/holochain-panel)
+
+## Ekran Görüntüleri
+
+### Kullanıcı Listele
+<img src="./screenshot/userList.png" />
+
+### Kullanıcı Oluştur
+<img src="./screenshot/userCreate.png" />
+
+### Kullanıcı Güncelle
+<img src="./screenshot/userUpdate.png" />
