@@ -1,7 +1,7 @@
 # Holochain Panel Arayüzü
 
 ## Uygulama Hakkında
-* Uygulama servisi holochain ile yazıldı.
+* [Uygulama servisi]((https://github.com/bayramlcm/holochain-panel)) holochain ile yazıldı.
 * Vue & Vuetify kullanılarak hazırlandı.
 
 
@@ -20,8 +20,6 @@ yarn serve
 yarn build
 ```
 
-### [Uygulama Servisine Git](https://github.com/bayramlcm/holochain-panel)
-
 ## Ekran Görüntüleri
 
 ### Kullanıcı Listele
@@ -32,3 +30,6 @@ yarn build
 
 ### Kullanıcı Güncelle
 <img src="./screenshot/userUpdate.png" />
+
+
+### [Uygulama Servisine Git](https://github.com/bayramlcm/holochain-panel)
